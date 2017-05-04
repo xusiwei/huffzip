@@ -62,7 +62,7 @@ void HuffmanTree::build()
         a->parent_ = b->parent_ = c;
 
         c->dump();
-        nodes.insert(std::make_pair(inners_.back().freq_, c));
+        nodes.insert(std::make_pair(c->freq_, c));
     }
     root_ = nodes.begin()->second;
 
