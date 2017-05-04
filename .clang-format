@@ -1,0 +1,7 @@
+BasedOnStyle: Webkit
+IndentWidth: 4
+BreakBeforeBraces: Linux
+AllowShortIfStatementsOnASingleLine: true
+IndentCaseLabels: false
+PointerAlignment: Left
+SortIncludes: false
