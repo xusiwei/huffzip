@@ -20,6 +20,7 @@ struct HuffmanNode {
     HuffmanNode();
     HuffmanNode(const HuffmanNode&) = default;
     void dump() const;
+    std::string str() const;
 };
 
 class HuffmanTree

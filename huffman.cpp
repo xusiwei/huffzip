@@ -4,6 +4,7 @@
 #include <string.h>
 #include <map>
 #include <queue>
+#include <sstream>
 #include <algorithm>
 
 HuffmanNode::HuffmanNode()
@@ -16,10 +17,22 @@ HuffmanNode::HuffmanNode()
 {
 }
 
+std::string HuffmanNode::str() const
+{
+    std::stringstream ss;
+    ss << this
+       << ":{type: " << (LEAF == type_ ? "LEAF" : "INNER")
+       << ", left: " << left_
+       << ", right: " << right_
+       << ", parent: " << parent_
+       << ", freq: " << freq_
+       << ", value: " << (int)value_ << "}";
+    return ss.str();
+}
+
 void HuffmanNode::dump() const
 {
-    printf("HuffmanNode_%p: {type: %s, left:%p, right:%p, parent:%p, freq:%d, value:%c}.\n",
-        this, (type_ == LEAF ? "LEAF" : "INNER"), left_, right_, parent_, freq_, value_);
+    printf("%s\n", str().c_str());
 }
 
 HuffmanTree::HuffmanTree()
@@ -86,19 +99,25 @@ void HuffmanTree::dump() const
     if (!root_) return;
 
     printf("HuffmanTree::dump(%p)\n", root_);
+
+    std::map<HuffmanNode*, int> depth;
+    depth[root_] = 0;
+
     stack.push_back(root_);
     while (stack.size()) {
         HuffmanNode* p = stack.back();
         stack.pop_back();
-        printf("%p:", p);
-        if (HuffmanNode::LEAF == p->type_) {
-            printf("LEAF| %c |", p->value_);
-        } else {
-            printf("    |   |");
+
+        std::string prefix(depth[p] * 4, ' ');
+        printf("%s%s\n", prefix.c_str(), p->str().c_str());
+        if (p->left_) {
+            stack.push_back(p->left_);
+            depth[p->left_] = depth[p] + 1;
         }
-        printf("%6d | %s |\n", p->freq_, bv2string(p->code_).c_str());
-        if (p->left_) stack.push_back(p->left_);
-        if (p->right_) stack.push_back(p->right_);
+        if (p->right_) {
+            stack.push_back(p->right_);
+            depth[p->right_] = depth[p] + 1;
+        }
     }
 }
 
