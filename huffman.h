@@ -18,7 +18,6 @@ struct HuffmanNode {
     std::vector<bool> code_;
 
     HuffmanNode();
-    HuffmanNode(const HuffmanNode&) = default;
     void dump() const;
     std::string str() const;
 };

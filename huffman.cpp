@@ -54,7 +54,6 @@ void HuffmanTree::build()
     std::multimap<uint32_t, HuffmanNode*> nodes;
     for (size_t i = 0; i < leaves_.size(); i++) {
         if (leaves_[i].freq_) {
-            leaves_[i].dump();
             nodes.insert(std::make_pair(leaves_[i].freq_, &leaves_[i]));
         }
     }
@@ -74,7 +73,6 @@ void HuffmanTree::build()
         c->right_ = b;
         a->parent_ = b->parent_ = c;
 
-        c->dump();
         nodes.insert(std::make_pair(c->freq_, c));
     }
     root_ = nodes.begin()->second;

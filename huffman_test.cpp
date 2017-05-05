@@ -8,8 +8,9 @@ int main(int argc, char* argv[])
     if (argc > 1) str = argv[1];
 
     HuffmanTree tree;
-    for (auto c : str)
-        tree.feed(c);
+    for (size_t i = 0; i < str.length(); i++) {
+        tree.feed(str[i]);
+    }
 
     tree.build();
     tree.dump();
