@@ -1,5 +1,5 @@
-#ifndef HUFFMAN_H
-#define HUFFMAN_H
+#ifndef HUFFZIP_HUFFMAN_H
+#define HUFFZIP_HUFFMAN_H
 
 #include <stdint.h>
 #include <map>
@@ -33,15 +33,20 @@ public:
 
     void build();
 
+    void reset();
+
     void dump() const;
+
+    bool getEncodeDict(std::map<uint8_t, std::vector<bool> >* dict);
+
+    bool getDecodeDict(std::map<std::vector<bool>, uint8_t>* dict);
 
 private:
     HuffmanNode* root_;
     std::vector<HuffmanNode> leaves_;
     std::vector<HuffmanNode> inners_;
-    std::map<uint8_t, std::vector<bool> > dict_;
 };
 
 std::string bv2string(std::vector<bool>& bv);
 
-#endif // HUFFMAN_H
+#endif // HUFFZIP_HUFFMAN_H

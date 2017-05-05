@@ -36,12 +36,19 @@ void HuffmanNode::dump() const
 }
 
 HuffmanTree::HuffmanTree()
-    : root_(NULL)
 {
+    reset();
+}
+
+void HuffmanTree::reset()
+{
+    root_ = NULL;
     leaves_.resize(NCHARS);
     for (int i = 0; i < NCHARS; i++) {
         leaves_[i].value_ = static_cast<uint8_t>(i);
     }
+    inners_.resize(0);
+    inners_.reserve(NCHARS);
 }
 
 void HuffmanTree::feed(uint8_t byte)
@@ -59,13 +66,14 @@ void HuffmanTree::build()
     }
 
     size_t count = 0;
-    inners_.resize(leaves_.size() / 2 + 1);
+    size_t leaves_count = nodes.size();
     while (nodes.size() > 1) {
         HuffmanNode* a = nodes.begin()->second;
         nodes.erase(nodes.begin());
         HuffmanNode* b = nodes.begin()->second;
         nodes.erase(nodes.begin());
 
+        inners_.resize(count + 1);
         HuffmanNode* c = &inners_[count++];
         c->freq_ = a->freq_ + b->freq_;
         c->type_ = HuffmanNode::INNER;
@@ -76,6 +84,17 @@ void HuffmanTree::build()
         nodes.insert(std::make_pair(c->freq_, c));
     }
     root_ = nodes.begin()->second;
+
+    if (1 == leaves_count) {
+        inners_.resize(1);
+        HuffmanNode* a = root_;
+        root_ = &inners_[0];
+        root_->freq_ = a->freq_;
+        root_->type_ = HuffmanNode::INNER;
+        root_->left_ = a;
+        root_->right_ = NULL;
+        a->parent_ = root_;
+    }
 
     std::vector<HuffmanNode*> stack;
     stack.push_back(root_);
@@ -117,6 +136,32 @@ void HuffmanTree::dump() const
             depth[p->right_] = depth[p] + 1;
         }
     }
+}
+
+bool HuffmanTree::getEncodeDict(std::map<uint8_t, std::vector<bool> >* dict)
+{
+    if (!dict) return false;
+
+    dict->clear();
+    for (size_t i = 0; i < NCHARS; i++) {
+        if (leaves_[i].freq_) {
+            dict->insert(std::make_pair(leaves_[i].value_, leaves_[i].code_));
+        }
+    }
+    return true;
+}
+
+bool HuffmanTree::getDecodeDict(std::map<std::vector<bool>, uint8_t>* dict)
+{
+    if (!dict) return false;
+
+    dict->clear();
+    for (size_t i = 0; i < NCHARS; i++) {
+        if (leaves_[i].freq_) {
+            dict->insert(std::make_pair(leaves_[i].code_, leaves_[i].value_));
+        }
+    }
+    return true;
 }
 
 std::string bv2string(std::vector<bool>& bv)
