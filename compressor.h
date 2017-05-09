@@ -16,7 +16,7 @@ public:
 
     ~Compressor();
 
-    int64_t compress(const char* ifn, const char* ofn);
+    int64_t compress(std::string ifn, std::string ofn, std::string* mfn);
 
 private:
     void reset();

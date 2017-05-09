@@ -61,15 +61,17 @@ int64_t bins2fs(FILE* stream, std::vector<bool> bins, bool last = false)
     return count;
 }
 
-int64_t Compressor::compress(const char* ifn, const char* ofn)
+int64_t Compressor::compress(std::string ifn, std::string ofn, std::string* mfn)
 {
     reset();
-    fin_ = fopen(ifn, "rb");
-    fout_ = fopen(ofn, "wb+");
+    fin_ = fopen(ifn.c_str(), "rb");
+    fout_ = fopen(ofn.c_str(), "wb+");
 
-    std::string meta_fn = ifn;
-    meta_fn += ".meta";
+    std::string meta_fn = ifn + ".meta";
     fmeta_ = fopen(meta_fn.c_str(), "wb+");
+    if (mfn) {
+        *mfn = meta_fn;
+    }
 
     size_t nbytes = 0;
     const int PAGE = 4096;
